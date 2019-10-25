@@ -22,7 +22,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: "history",
+  mode: "history",  // 历史路由
   base: process.env.BASE_URL,
   routes
 });

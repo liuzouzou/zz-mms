@@ -1,3 +1,3 @@
 <template>
-  <div>首页</div>
+  <div>邹邹管理系统</div>
 </template>

@@ -5,7 +5,7 @@
     <!-- :router='true'开启之后点击就会跳转到对应的路由，默认为false -->
     <el-menu
      :router='true'
-      default-active="/"
+      default-active="/home"
       class="el-menu-vertical-demo"
 
       background-color="#545c64"
@@ -14,7 +14,7 @@
     >
      
        <!-- class就是icon -->
-      <el-menu-item index="/">
+      <el-menu-item index="/home">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>
       </el-menu-item>

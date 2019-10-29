@@ -50,6 +50,6 @@
   right: 0px;
   padding: 10px;
   overflow-y: auto; /* 当内容过多时y轴出现滚动条 */
-  background-color: red;
+  /* background-color: red; */
 }
 </style>

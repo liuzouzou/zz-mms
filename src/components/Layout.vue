@@ -15,7 +15,7 @@
 
     // 导入子组件，缩写格式 AppHeader: AppHeader
     export default {
-      components: { AppHeader, AppNavbar, AppMain }
+      components: { AppHeader, AppNavbar, AppMain }  // 有s
     };
 </script>
 

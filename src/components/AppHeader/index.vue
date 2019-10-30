@@ -26,10 +26,41 @@
 </template>
 
 <script>
+import {logout} from '@/api/login.js'  // 导入退出登录的接口函数
+
   export default {
     methods: {
       handleCommand(command) {
-        this.$message('click on item ' + command);
+        switch (command) {
+          case 'edit':
+            // 修改密码
+            this.$message('修改密码');
+            break;
+
+          case 'quit':
+            // 退出登录
+            // 获取token，在浏览器的localStorage里存着
+            logout(localStorage.getItem("zz-mms-user")).then(response =>{
+              const res = response.data
+              if (res.flag){
+                // 退出成功，清除本地数据
+                    localStorage.removeItem("zz-mms-user");
+                    localStorage.removeItem("zz-mms-token");
+                    this.$router.push('/login')
+              }else{
+                // 退出失败
+                this.$message({
+                    showClose: true,
+                    message: res.message,
+                    type: 'warning'
+        });
+              }
+            })
+            break;
+        
+          default:
+            break;
+        }
       }
     }
   }

@@ -22,3 +22,14 @@ export function getUserInfo(token){
         method: 'get'
     })
 }
+
+// 退出登录
+export function logout(token){  // 前端传来的token
+    return request({
+        url: '/user/logout',
+        method: 'post',
+        data: {
+            token
+        }
+    })
+}

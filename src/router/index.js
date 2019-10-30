@@ -13,6 +13,11 @@ import Goods from '@/views/goods' // 商品管理
 
 Vue.use(Router);
 
+// 不写下面的，点击相同的路由会报错
+const originalPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+};
 
 
 export default new Router({

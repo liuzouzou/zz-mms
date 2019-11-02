@@ -53,9 +53,7 @@ export default {
                   // 获取到了用户信息
                   console.log("userInfo", resUser.data);
                   // 保存token和用户信息
-                  localStorage.setItem(
-                    "zz-mms-user",
-                    JSON.stringify(resUser.data)
+                  localStorage.setItem("zz-mms-user",JSON.stringify(resUser.data)
                   );
                   localStorage.setItem("zz-mms-token", res.data.token);
 

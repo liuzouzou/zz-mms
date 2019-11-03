@@ -6,7 +6,7 @@
     <el-form ref="searchForm" :inline="true" :model="searchMap" style="margin-top: 20px">
       <!-- 重置会看 el-form-item 组件元素的 prop 上是否指定了字段名，指定了才会重置生效 -->
       <el-form-item prop="cardNum">
-        <!-- searchMap.cardNum 可以不在data里定义，placeholder背景文案 -->
+        <!--prop需要在data里指定，不指定会出现重置不了的问题， placeholder背景文案 -->
         <el-input v-model="searchMap.cardNum" placeholder="会员卡号" style="width: 200px"></el-input>
       </el-form-item>
       <el-form-item prop="name">
@@ -35,6 +35,7 @@
           placeholder="出生日期"
         ></el-date-picker>
       </el-form-item>
+      <!-- 日期搜索框结束 -->
 
       <el-form-item>
         <el-button type="primary" @click="fetchData">查询</el-button>
@@ -42,8 +43,9 @@
         <el-button @click="resetForm('searchForm')">重置</el-button>
       </el-form-item>
     </el-form>
+    <!-- 搜索框结束 -->
 
-    <!-- 
+    <!-- 列表页面
       :data绑定渲染的数据
       border 表格边框
       height 表格高度
@@ -63,7 +65,7 @@
           <span>{{scope.row.payType | payTypeFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="address" label="会员地址"></el-table-column>
+      <el-table-column prop="address" label="会员地址" width='180'></el-table-column>
 
       <!-- 操作 -->
       <el-table-column label="操作" width="150">
@@ -74,6 +76,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 列表页面结束 -->
 
     <!-- 分页 -->
     <el-pagination
@@ -85,6 +88,7 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     ></el-pagination>
+    <!-- 分页结束 -->
 
     <!-- 弹出新增窗口 
         title 窗口的标题
@@ -149,6 +153,7 @@
           type="primary"
           @click="pojo.id === null ? addData('pojoForm'): updateData('pojoForm')"
         >确 定</el-button>
+        <!-- 弹出窗口结束 -->
       </div>
     </el-dialog>
   </div>
@@ -214,7 +219,7 @@ export default {
     fetchData() {
       // 请求接口
       // memberApi.getList().then(response=>{
-      // 调用分页的接口
+      // 调用分页的接口，不使用getList接口
       memberApi
         .search(this.currenPage, this.pageSize, this.searchMap)
         .then(response => {

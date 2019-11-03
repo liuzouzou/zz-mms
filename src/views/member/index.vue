@@ -31,8 +31,8 @@
 
             <el-form-item>
                 <el-button type="primary" @click="fetchData" >查询</el-button>
-                 <!-- <el-button type="primary" @click="handleAdd" >新增</el-button>
-                <el-button  @click="resetForm('searchForm')" >重置</el-button> -->
+                 <!-- <el-button type="primary" @click="handleAdd" >新增</el-button> -->
+                <el-button  @click="resetForm('searchForm')" >重置</el-button>
             </el-form-item>
         </el-form>
 
@@ -108,7 +108,12 @@ export default {
       total: 0, // 总记录数
       currenPage: 1,  // 当前页码
       pageSize: 10,   // 每页显示的数据条数
-      searchMap: {},   // 条件查询绑定的条件值
+      searchMap: {  // 条件查询绑定的条件值
+          cardNum: '',
+          name: '',
+          payType: '',
+          birthday: ''
+      },   
       payTypeOptions  // 这里要申明，要不然搜索框里使用的时候会报错
     }
   },
@@ -136,6 +141,10 @@ export default {
     },
     handleDelete(id){
       console.log('删除',id)
+    },
+    // 重置功能,element ui 提供的功能
+    resetForm(formName){
+      this.$refs[formName].resetFields();
     },
     // 当每页显示条数改变后被触发，val是最新的每页显示条数
     handleSizeChange(val){

@@ -31,7 +31,7 @@
 
             <el-form-item>
                 <el-button type="primary" @click="fetchData" >查询</el-button>
-                 <!-- <el-button type="primary" @click="handleAdd" >新增</el-button> -->
+                 <el-button type="primary" @click="handleAdd" >新增</el-button>
                 <el-button  @click="resetForm('searchForm')" >重置</el-button>
             </el-form-item>
         </el-form>
@@ -87,6 +87,61 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
     </el-pagination>
+
+    <!-- 弹出新增窗口 
+        title 窗口的标题
+        :visible.sync 当它true的时候，窗口会被弹出
+        -->
+        <!-- :rules="rules"校验，需要在校验的字段上指定prop -->
+        <!-- 这里都要绑定prop，并且在data里声明，要不然弹框里的数据不会清空或者不能输入 -->
+        <el-dialog title="会员编辑" :visible.sync="dialogFormVisible" width="500px">
+            <el-form 
+            :rules="rules"
+            ref="pojoForm"
+            label-width="100px"
+            label-position="right"
+            style="width: 400px;"
+            :model="pojo">
+                <el-form-item label="会员卡号" prop="cardNum" >
+                <el-input v-model="pojo.cardNum" ></el-input>
+                </el-form-item>
+                <el-form-item label="会员姓名" prop="name" >
+                <el-input v-model="pojo.name" ></el-input>
+                </el-form-item>
+                <el-form-item label="会员生日" prop="birthday" >
+                    <!-- value-format 是指定绑定值的格式 -->
+                    <el-date-picker style="width: 200px" value-format="yyyy-MM-dd" v-model="pojo.birthday"  type="date" placeholder="会员生日"> </el-date-picker>
+                </el-form-item>
+                <el-form-item label="手机号码" prop="phone" >
+                <el-input v-model="pojo.phone" ></el-input>
+                </el-form-item>
+                <el-form-item label="开卡金额" prop="money">
+                <el-input v-model="pojo.money" ></el-input>
+                </el-form-item>
+                <el-form-item label="可用积分" prop="integral">
+                <el-input v-model="pojo.integral" ></el-input>
+                </el-form-item>
+                <el-form-item label="支付类型" prop="payType" >
+                    <el-select v-model="pojo.payType" placeholder="支付类型" style="width: 110px">
+                        <!-- 不要忘记 payTypeOptions 绑定到data中 -->
+                        <el-option v-for="option in payTypeOptions" 
+                        :key="option.type"
+                        :label="option.name"
+                        :value="option.type"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="会员地址" prop="address">
+                    <el-input type="textarea" v-model="pojo.address" ></el-input>
+                </el-form-item>
+                
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addData('pojoForm')">确 定</el-button>
+                <!-- <el-button type="primary" @click="pojo.id === null ? addData('pojoForm'): updateData('pojoForm')">确 定</el-button> -->
+            </div>
+        </el-dialog>
   </div>
 </template>
 
@@ -114,7 +169,31 @@ export default {
           payType: '',
           birthday: ''
       },   
-      payTypeOptions  // 这里要申明，要不然搜索框里使用的时候会报错
+      payTypeOptions,  // 这里要申明，要不然搜索框里使用的时候会报错
+      payTypeOptions, // payTypeOptions: payTypeOptions
+      dialogFormVisible: false, //控制对话框，默认不弹出
+       pojo: {  // 提交的数据
+                id: null,
+                cardNum: '',
+                name: '',
+                birthday: '',
+                phone: '',
+                money: 0,  // 输入框里的默认值
+                integral: 0,
+                payType: '',
+                address: ''
+            }, 
+      rules: { // 校验规则
+                cardNum: [
+                    {required: true, message: '卡号不能为空', trigger: 'blur'}
+                ],
+                name: [
+                    {required: true, message: '姓名不能为空', trigger: 'blur'}
+                ],
+                payType: [
+                    {required: true, message: '支付类型不能为空', trigger: 'change'}
+                ]
+            } 
     }
   },
 
@@ -146,6 +225,47 @@ export default {
     resetForm(formName){
       this.$refs[formName].resetFields();
     },
+    // 新增
+    handleAdd(){
+      this.dialogFormVisible = true
+    },
+    // 提交新增数据
+        addData(formName) {
+            this.$refs[formName].validate(valid => {
+                if(valid){
+                    //提交表单
+                    console.log('addData')
+                    memberApi.add(this.pojo).then(response => {
+                        const resp = response.data
+                        if(resp.flag) {
+                            //新增成功，刷新列表数据
+                            this.fetchData()
+                            this.dialogFormVisible = false // 关闭窗口
+                        }else {
+                            // 失败，来点提示信息
+                            this.$message({
+                                message: resp.message,
+                                type: 'warning'
+                            })
+                        }
+                    })
+                }else {
+                    return false
+                }
+            })
+        },
+         // 弹出新增窗口
+        handleAdd() {
+            console.log(this.pojo)
+            // this.pojo = {}
+            this.dialogFormVisible = true
+            this.$nextTick(() => { 
+                // this.$nextTick()它是一个异步事件，当渲染结束 之后 ，它的回调函数才会被执行
+                // 弹出窗口打开之后 ，需要加载Dom, 就需要花费一点时间，我们就应该等待它加载完dom之后，再进行调用resetFields方法，重置表单和清除样式
+                this.$refs['pojoForm'].resetFields()
+            })
+            
+        },
     // 当每页显示条数改变后被触发，val是最新的每页显示条数
     handleSizeChange(val){
       this.pageSize = val

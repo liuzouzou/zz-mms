@@ -138,8 +138,9 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addData('pojoForm')">确 定</el-button>
-                <!-- <el-button type="primary" @click="pojo.id === null ? addData('pojoForm'): updateData('pojoForm')">确 定</el-button> -->
+                <!-- <el-button type="primary" @click="addData('pojoForm')">确 定</el-button> -->
+                <!-- 当pojo.id === null时，调用新增接口addData，当不为null，表示有id，则调更新接口updateData -->
+                <el-button type="primary" @click="pojo.id === null ? addData('pojoForm'): updateData('pojoForm')">确 定</el-button>
             </div>
         </el-dialog>
   </div>
@@ -215,9 +216,43 @@ export default {
         console.log('总数',this.total)
       })
     },
-    handleEdit(id){  // id是后端返回的id
-      console.log('编辑',id)
-    },
+    // 打开编辑窗口
+    handleEdit(id) {
+        console.log('编辑', id)
+        this.handleAdd() 
+        memberApi.getById(id).then(response => {
+        const resp = response.data
+              if(resp.flag) {
+                  this.pojo = resp.data
+                  console.log(this.pojo)
+                }
+            })
+        },
+    // 更新接口
+      updateData(formName) {
+            console.log('updateData')
+            this.$refs[formName].validate(valid => {
+                if(valid){
+                    // 提交更新
+                    memberApi.update(this.pojo).then(response => {
+                        const resp = response.data
+                        if(resp.flag) {
+                            // 刷新列表
+                            this.fetchData()
+                            this.dialogFormVisible = false  // 关闭弹窗
+                        }else {
+                            this.$message({
+                                message: resp.message,
+                                type: 'warning'
+                            })
+                        }
+                    })
+
+                }else {
+                    return false
+                }
+            })
+        },
     handleDelete(id){
       console.log('删除',id)
     },

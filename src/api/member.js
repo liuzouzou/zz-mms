@@ -45,5 +45,13 @@ export default {
             method: 'put',
             data: pojo
         })
-    }
+    },
+
+    // 删除会员
+    deleteById(id){
+        return request({
+            url: `/member/${id}`,
+            method: 'delete',
+        })
+    },
 }

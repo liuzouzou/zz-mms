@@ -38,10 +38,10 @@ export default {
         })
     },
 
-    // 更新数据
+    // 更新数据，id在pojo里获取
     update(pojo){
         return request({
-            url: `/member/${pojo.id}`,
+            url: `/member/${pojo.id}`, 
             method: 'put',
             data: pojo
         })

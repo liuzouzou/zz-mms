@@ -149,13 +149,11 @@
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <!-- <el-button type="primary" @click="addData('pojoForm')">确 定</el-button> -->
         <!-- 当pojo.id === null时，调用新增接口addData，当不为null，表示有id，则调更新接口updateData -->
-        <el-button
-          type="primary"
-          @click="pojo.id === null ? addData('pojoForm'): updateData('pojoForm')"
-        >确 定</el-button>
-        <!-- 弹出窗口结束 -->
+        <el-button type="primary" @click="pojo.id === null ? addData('pojoForm'): updateData('pojoForm')">确 定</el-button>
+        
       </div>
     </el-dialog>
+    <!-- 弹出窗口结束 -->
   </div>
 </template>
 
@@ -188,7 +186,7 @@ export default {
       payTypeOptions, // payTypeOptions: payTypeOptions
       dialogFormVisible: false, //控制对话框，默认不弹出
       pojo: {
-        // 提交的数据
+        // 提交的数据，不写有时候会导致输入框输入不了
         id: null,
         cardNum: "",
         name: "",
@@ -233,12 +231,12 @@ export default {
     // 打开编辑窗口
     handleEdit(id) {
       console.log("编辑", id);
-      this.handleAdd();
+      this.handleAdd();  // 要打开窗口，清除数据，直接复用handleAdd就可以了
       memberApi.getById(id).then(response => {
         const resp = response.data;
         if (resp.flag) {
-          this.pojo = resp.data;
-          console.log(this.pojo);
+          this.pojo = resp.data;  // 将数据赋值给pojo显示在输入框里
+          console.log(this.pojo);  
         }
       });
     },
@@ -261,7 +259,7 @@ export default {
               });
             }
           });
-        } else {
+        } else {  // 没有校验通过，返回false
           return false;
         }
       });
@@ -279,6 +277,7 @@ export default {
                     // console.log(response)
                     const resp = response.data
 
+                    // 删除成功或失败的提示信息
                     this.$message({
                         message: resp.message,
                         type: resp.flag ? 'success': 'error'
@@ -299,18 +298,14 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-
-    // 新增
-    handleAdd() {
-      this.dialogFormVisible = true;
-    },
-
-    // 提交新增数据
+    // 提交新增数据,formName就是传过来的pojoForm
     addData(formName) {
+      // console.log('数据',formName)
       this.$refs[formName].validate(valid => {
         if (valid) {
           //提交表单
           console.log("addData");
+          // pojo才是提交到后台的数据，不是formName
           memberApi.add(this.pojo).then(response => {
             const resp = response.data;
             if (resp.flag) {
@@ -325,7 +320,7 @@ export default {
               });
             }
           });
-        } else {
+        } else {  // 没有校验通过，返回false
           return false;
         }
       });

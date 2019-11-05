@@ -78,7 +78,7 @@ export default new Router({
               {
                 path: '/',  
                 component: Goods,
-                meta: {title: '员工管理'}
+                meta: {title: '商品管理'}
               }
           ]
           

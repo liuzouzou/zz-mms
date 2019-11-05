@@ -96,7 +96,8 @@
     -->
     <!-- :rules="rules"校验，需要在校验的字段上指定prop -->
     <!-- 这里都要绑定prop，并且在data里声明，要不然弹框里的数据不会清空或者不能输入 -->
-    <el-dialog title="会员编辑" :visible.sync="dialogFormVisible" width="500px">
+    <!-- :closeOnClickModal=false 点击空白区域不关闭弹框，默认为true -->
+    <el-dialog title="会员编辑" :closeOnClickModal=false :visible.sync="dialogFormVisible" width="500px">
       <el-form
         :rules="rules"
         ref="pojoForm"
@@ -218,9 +219,7 @@ export default {
       // 请求接口
       // memberApi.getList().then(response=>{
       // 调用分页的接口，不使用getList接口
-      memberApi
-        .search(this.currenPage, this.pageSize, this.searchMap)
-        .then(response => {
+      memberApi.search(this.currenPage, this.pageSize, this.searchMap).then(response => {
           const res = response.data;
           this.list = res.data.rows; // 只要data里的数据
           console.log(res);

@@ -69,9 +69,10 @@
     -->
     <!-- :rules="rules"校验，需要在校验的字段上指定prop -->
     <!-- 这里都要绑定prop，并且在data里声明，要不然弹框里的数据不会清空或者不能输入 -->
-    <el-dialog title="供应商编辑" :visible.sync="dialogFormVisible" width="500px">
+    <el-dialog title="供应商编辑" :closeOnClickModal=false :visible.sync="dialogFormVisible" width="500px">
       <el-form
         :rules="rules"
+        
         ref="pojoForm"
         label-width="100px"
         label-position="right"

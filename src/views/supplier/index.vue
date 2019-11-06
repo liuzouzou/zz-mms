@@ -10,17 +10,18 @@
         <el-input v-model="searchMap.name" placeholder="供应商名称" style="width: 200px"></el-input>
       </el-form-item>
       <el-form-item prop="linkMan">
-        <el-input v-model="searchMap.linkMan" placeholder="联系人" style="width: 200px"></el-input>
+     <!-- v-if='!isDialog',isDialog为true，!isDialog为false，列表展示，弹框不展示 -->
+        <el-input v-model="searchMap.linkMan"  v-if='!isDialog' placeholder="联系人" style="width: 200px"></el-input>
       </el-form-item>
       <el-form-item prop="mobile">
-        <el-input v-model="searchMap.mobile" placeholder="联系电话" style="width: 200px"></el-input>
+        <el-input v-model="searchMap.mobile" v-if='!isDialog' placeholder="联系电话" style="width: 200px"></el-input>
       </el-form-item>
     
 
       <el-form-item>
         <el-button type="primary" @click="fetchData">查询</el-button>
-        <el-button type="primary" @click="handleAdd">新增</el-button>
-        <el-button @click="resetForm('searchForm')">重置</el-button> 
+        <el-button type="primary" v-if='!isDialog' @click="handleAdd">新增</el-button>
+        <el-button v-if='!isDialog' @click="resetForm('searchForm')">重置</el-button> 
       </el-form-item>
     </el-form>
     <!-- 搜索框结束 -->   
@@ -32,16 +33,23 @@
       border 表格边框
       height 表格高度
     -->
-    <el-table :data="list" height="380" border style="width: 100%">
+    <!-- Table 组件提供了单选的支持，只需要配置highlight-current-row属性即可实现单选。
+    之后由current-change事件来管理选中时触发的事件，它会传入currentRow，oldCurrentRow。
+    如果需要显示索引，可以增加一列el-table-column，设置type属性为index即可显示从 1 开始的索引号。 -->
+    <!-- 当点击时调用handleCurrentChange这个方法 -->
+    <!-- 供应商的列表也会选中，如果不想选中，将下面的highlight-current-row改为 :highlight-current-row='isDialog' -->
+    <el-table  highlight-current-row @current-change="handleCurrentChange"
+    :data="list" height="380" border style="width: 100%">
       <!-- type='index'获取索引值，从1开始，label显示的标题，prop数据字段名，width列宽 -->
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="name" label="供应商名称" width="180"></el-table-column>
+      <!-- v-if='!isDialog',isDialog为true，!isDialog为false，列表展示，弹框不展示 -->
       <el-table-column prop="linkman" label="联系人" width='100'></el-table-column>
-      <el-table-column prop="mobile" label="联系电话" width="180"></el-table-column>
-      <el-table-column prop="remark" label="备注" ></el-table-column>
+      <el-table-column prop="mobile"  v-if='!isDialog' label="联系电话" width="180"></el-table-column>
+      <el-table-column prop="remark"  v-if='!isDialog' label="备注" ></el-table-column>
 
       <!-- 操作 -->
-      <el-table-column label="操作" width="150">
+      <el-table-column v-if='!isDialog' label="操作" width="150">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit( scope.row.id)">编辑</el-button>
           <!-- 根据后端返回该行的id进行编辑和删除 -->
@@ -52,13 +60,17 @@
     <!-- 列表数据结束 -->
 
    <!-- 分页 -->
+   <!-- :layout="!isDialog ? 'total, sizes, prev, pager, next, jumper': 'prev, pager, next'"
+      为true时，显示所有，为false时，显示 prev, pager, next
+    -->
     <el-pagination
+      :layout="!isDialog ? 'total, sizes, prev, pager, next, jumper': 'prev, pager, next'"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currenPage"
       :page-sizes="[10, 20, 30, 40]"
       :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
+      
       :total="total"
     ></el-pagination>
     <!-- 分页完成 -->
@@ -108,6 +120,11 @@
 import supplierApi from '@/api/supplier'
 
 export default {
+  // 接收父组件传递过来的数据，通过isDialog判断是否为弹框
+  // 如果为true，就是弹框，false就是列表，传递过来的为true
+  props: {
+    isDialog: Boolean
+  },
   data(){
     return{
       list:[],
@@ -265,6 +282,16 @@ export default {
             return false
           }
         })
+    },
+    // 当点击某一行时，会调用这个函数进行处理，子组件向父组件传值
+    handleCurrentChange(currentRow){
+      console.log(currentRow)
+      // 点击后，要将点击的数据传递给父组件（商品管理中）
+      //  则可以通过触发父组件的option-supplier，触发之后，父组件可以在option-supplier这个事件对应的
+      // 处理函数中进行接收数据
+      // 第一个参数是父组件的点击事件，第二个是要传递的数据
+      this.$emit('option-supplier', currentRow)
+
     },
   }
   }

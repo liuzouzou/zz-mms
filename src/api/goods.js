@@ -20,5 +20,30 @@ export default{
             method: 'post',
             data: pojo
         })
-    }
+    },
+
+    // 根据id查询数据
+    getById(id){
+        return request({
+            url: `/goods/${id}`,
+            method: 'get'
+        })
+    },
+
+    // 编辑数据
+    update(pojo){
+        return request({
+            url: `/goods/${pojo.id}`,
+            method: 'put',
+            data: pojo
+        })
+    },
+
+    // 删除数据
+    deleteById(id){
+        return request({
+            url: `/goods/${id}`,
+            method: 'delete'
+        })
+    },
 }

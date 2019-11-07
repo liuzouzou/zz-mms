@@ -117,9 +117,9 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addData('pojoForm')">确 定</el-button>
+        <!-- <el-button type="primary" @click="addData('pojoForm')">确 定</el-button> -->
         <!-- 当pojo.id === null时，调用新增接口addData，当不为null，表示有id，则调更新接口updateData -->
-        <!-- <el-button type="primary" @click="pojo.id === null ? addData('pojoForm'): updateData('pojoForm')">确 定</el-button> -->
+        <el-button type="primary" @click="pojo.id === null ? addData('pojoForm'): updateData('pojoForm')">确 定</el-button>
         
       </div>
     </el-dialog>
@@ -160,6 +160,7 @@ export default {
         code: [{required: true, message: '商品编码不能为空', trigger: 'blur'}]
       },
       pojo:{
+        id: null,
         name: '',
         code: '',
         spec: '',
@@ -250,10 +251,76 @@ export default {
         }
       });
     },
+    // 新增里面选择供应商弹框
     editOptionSupplier(){
       this.isEdit = true,   //  当前是通过编辑窗口的选中供应商打开的窗口
       this.dialogSupplierVisible = true
-    }
+    },
+    // 打开编辑窗口
+    handleEdit(id) {
+      console.log("编辑", id);
+      this.handleAdd();  // 要打开窗口，清除数据，直接复用handleAdd就可以了
+      goodsApi.getById(id).then(response => {
+        const resp = response.data;
+        if (resp.flag) {
+          this.pojo = resp.data;  // 将数据赋值给pojo显示在输入框里
+          console.log(this.pojo);  
+        }
+      });
+    },
+    // 更新接口
+    updateData(formName) {
+      console.log("updateData");
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // 提交更新
+          goodsApi.update(this.pojo).then(response => {
+            const resp = response.data;
+            if (resp.flag) {
+              // 刷新列表
+              this.fetchData();
+              this.dialogFormVisible = false; // 关闭弹窗
+            } else {
+              this.$message({
+                message: resp.message,
+                type: "warning"
+              });
+            }
+          });
+        } else {  // 没有校验通过，返回false
+          return false;
+        }
+      });
+    },
+    // 删除商品
+    handleDelete(id) {
+      console.log('删除', id)
+            this.$confirm('确认删除这条记录吗？', '提示', {
+                confirmButtonText: '确认',
+                cancelButtonText: '取消',
+            }).then(() => {
+                // 确认
+                console.log('确认')
+                goodsApi.deleteById(id).then(response => {
+                    // console.log(response)
+                    const resp = response.data
+
+                    // 删除成功或失败的提示信息
+                    this.$message({
+                        message: resp.message,
+                        type: resp.flag ? 'success': 'error'
+                    })
+
+                    if(resp.flag) {
+                        // 删除成功，刷新列表数据
+                        this.fetchData()
+                    }
+                })
+            }).catch(() => {
+                // 取消，不用理会
+                console.log('取消')
+            })
+    },
   }
 }
 </script>

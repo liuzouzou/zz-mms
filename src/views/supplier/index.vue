@@ -36,9 +36,9 @@
     <!-- Table 组件提供了单选的支持，只需要配置highlight-current-row属性即可实现单选。
     之后由current-change事件来管理选中时触发的事件，它会传入currentRow，oldCurrentRow。
     如果需要显示索引，可以增加一列el-table-column，设置type属性为index即可显示从 1 开始的索引号。 -->
-    <!-- 当点击时调用handleCurrentChange这个方法 -->
+    <!-- 当点击时调用clickCurrentChange这个方法 -->
     <!-- 供应商的列表也会选中，如果不想选中，将下面的highlight-current-row改为 :highlight-current-row='isDialog' -->
-    <el-table  highlight-current-row @current-change="handleCurrentChange"
+    <el-table  highlight-current-row @current-change="clickCurrentChange"
     :data="list" height="380" border style="width: 100%">
       <!-- type='index'获取索引值，从1开始，label显示的标题，prop数据字段名，width列宽 -->
       <el-table-column type="index" label="序号" width="50"></el-table-column>
@@ -283,8 +283,9 @@ export default {
           }
         })
     },
+    
     // 当点击某一行时，会调用这个函数进行处理，子组件向父组件传值
-    handleCurrentChange(currentRow){
+    clickCurrentChange(currentRow){
       console.log(currentRow)
       // 点击后，要将点击的数据传递给父组件（商品管理中）
       //  则可以通过触发父组件的option-supplier，触发之后，父组件可以在option-supplier这个事件对应的

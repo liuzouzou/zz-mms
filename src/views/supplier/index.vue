@@ -92,16 +92,16 @@
         :model="pojo"
       >
         <el-form-item label="供应商名称" prop="name">
-          <el-input v-model="pojo.name"></el-input>
+          <el-input v-model="pojo.name" placeholder="请输入供应商名称"></el-input>
         </el-form-item>
         <el-form-item label="联系人" prop="linkman">
-          <el-input v-model="pojo.linkman"></el-input>
+          <el-input v-model="pojo.linkman" placeholder="请输入联系人"></el-input>
         </el-form-item>
         <el-form-item label="联系电话" prop="mobile">
-          <el-input v-model="pojo.mobile"></el-input>
+          <el-input v-model="pojo.mobile" placeholder="请输入联系电话"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input type="textarea" v-model="pojo.remark"></el-input>
+          <el-input type="textarea" v-model="pojo.remark" placeholder="请输入备注"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

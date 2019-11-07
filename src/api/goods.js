@@ -10,8 +10,15 @@ export default{
             url: `/goods/list/search/${page}/${size}`,
             method: 'post',
             data: searchMap
-        })
+        })   
+    },
 
-        
+    // 新增商品
+    add(pojo){
+        return request({
+            url: '/goods',
+            method: 'post',
+            data: pojo
+        })
     }
 }

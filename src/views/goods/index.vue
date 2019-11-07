@@ -24,7 +24,7 @@
 
       <el-form-item>
         <el-button type="primary" @click="fetchData">查询</el-button>
-        <!-- <el-button type="primary" @click="handleAdd">新增</el-button> -->
+        <el-button type="primary" @click="handleAdd">新增</el-button>
         <el-button @click="resetForm('searchForm')">重置</el-button> 
       </el-form-item>
     </el-form>
@@ -80,6 +80,51 @@
     </el-dialog>
 
 
+    <!-- 弹出新增窗口 -->
+    <el-dialog title="编辑商品" :visible.sync='dialogFormVisible' width=500px>
+     <el-form
+        :rules="rules"
+        ref="pojoForm"
+        label-width="100px"
+        label-position="right"
+        style="width: 400px;"
+        :model="pojo"
+      >
+
+        <el-form-item label="商品名称" prop="name">
+          <el-input v-model="pojo.name" placeholder="请输入商品名称"></el-input>
+        </el-form-item>
+        <el-form-item label="商品编码" prop="code">
+          <el-input v-model="pojo.code" placeholder="请输入商品编码"></el-input>
+        </el-form-item>
+        <el-form-item label="商品规格" prop="spec">
+           <el-input v-model="pojo.spec" placeholder="请输入商品规格"></el-input>
+        </el-form-item>
+        <el-form-item label="零售价" prop="retailPrice">
+          <el-input v-model="pojo.retailPrice" placeholder="请输入零售价"></el-input>
+        </el-form-item>
+        <el-form-item label="进货价" prop="purchasePrice">
+          <el-input v-model="pojo.purchasePrice" placeholder="请输入进货价"></el-input>
+        </el-form-item>
+        <el-form-item label="库存数量" prop="storageNum">
+          <el-input v-model="pojo.storageNum" placeholder="请输入库存数量"></el-input>
+        </el-form-item>
+        <el-form-item label="供应商" prop="supplierName">
+          <!-- readonly只读， -->
+          <el-input readonly @click.native = 'editOptionSupplier' v-model="pojo.supplierName" placeholder="请选择供应商"></el-input>
+        </el-form-item>
+        
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addData('pojoForm')">确 定</el-button>
+        <!-- 当pojo.id === null时，调用新增接口addData，当不为null，表示有id，则调更新接口updateData -->
+        <!-- <el-button type="primary" @click="pojo.id === null ? addData('pojoForm'): updateData('pojoForm')">确 定</el-button> -->
+        
+      </div>
+    </el-dialog>
+    <!-- 新增窗口结束 -->
+
 
 
   </div>
@@ -108,7 +153,24 @@ export default {
         supplierName: ''
 
       },
-      dialogSupplierVisible: false // 弹出选择供应商对话框
+      dialogSupplierVisible: false, // 弹出选择供应商对话框
+      dialogFormVisible: false,   // 弹出新增商品窗口
+      rules: {
+        name: [{required: true, message: '商品名称不能为空', trigger: 'blur'}],
+        code: [{required: true, message: '商品编码不能为空', trigger: 'blur'}]
+      },
+      pojo:{
+        name: '',
+        code: '',
+        spec: '',
+        retailPrice:'',
+        purchasePrice: '',
+        storageNum: '',
+        supplierName: '',
+        supplierId: null
+
+      },
+      isEdit: false   // 是否为编辑窗口,是编辑窗口，选中供应商后显示在新增弹框里。不是，显示在搜素框里
     }
 
   },
@@ -136,14 +198,62 @@ export default {
     },
     optionSupplier(currentRow){
         console.log('parent', currentRow)
+        if(this.isEdit){
+        this.pojo.supplierName = currentRow.name  //  供应商名称，supplierName传给后台
+        this.pojo.supplierId = currentRow.id // 供应商的id，supplierId传给后台
+        }else{
         this.searchMap.supplierName = currentRow.name  //  供应商名称，supplierName传给后台
         this.searchMap.supplierId = currentRow.id // 供应商的id，supplierId传给后台
+        }
+        this.isEdit = false  //还原默认值
         this.dialogSupplierVisible = false  // 关闭窗口
     },
     // 重置功能,element ui 提供的功能
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    // 弹出新增窗口
+    handleAdd() {
+      console.log(this.pojo);
+      // this.pojo = {}
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        // this.$nextTick()它是一个异步事件，当渲染结束 之后 ，它的回调函数才会被执行
+        // 弹出窗口打开之后 ，需要加载Dom, 就需要花费一点时间，我们就应该等待它加载完dom之后，再进行调用resetFields方法，重置表单和清除样式
+        this.$refs["pojoForm"].resetFields();
+      });
+    },
+    // 提交新增数据,formName就是传过来的pojoForm
+    addData(formName) {
+      // console.log('数据',formName)
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          //提交表单
+          console.log("addData");
+          // pojo才是提交到后台的数据，不是formName
+          goodsApi.add(this.pojo).then(response => {
+            const res = response.data;
+            if (res.flag) {
+              //新增成功，刷新列表数据
+              this.fetchData();
+              this.dialogFormVisible = false; // 关闭窗口
+            } else {
+              // 失败，来点提示信息
+              this.$message({
+                message: res.message,
+                type: "warning"
+              });
+            }
+          });
+        } else {  // 没有校验通过，返回false
+          return false;
+        }
+      });
+    },
+    editOptionSupplier(){
+      this.isEdit = true,   //  当前是通过编辑窗口的选中供应商打开的窗口
+      this.dialogSupplierVisible = true
+    }
   }
 }
 </script>

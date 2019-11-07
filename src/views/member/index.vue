@@ -106,10 +106,10 @@
         style="width: 400px;"
         :model="pojo"
       >
-        <el-form-item label="会员卡号" prop="cardNum">
-          <el-input v-model="pojo.cardNum"></el-input>
+        <el-form-item label="会员卡号"  prop="cardNum">
+          <el-input v-model="pojo.cardNum" placeholder="请输入会员卡号"></el-input>
         </el-form-item>
-        <el-form-item label="会员姓名" prop="name">
+        <el-form-item label="会员姓名" placeholder="请输入会员姓名" prop="name">
           <el-input v-model="pojo.name"></el-input>
         </el-form-item>
         <el-form-item label="会员生日" prop="birthday">
@@ -123,13 +123,13 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="手机号码" prop="phone">
-          <el-input v-model="pojo.phone"></el-input>
+          <el-input v-model="pojo.phone" placeholder="请输入手机号码"></el-input>
         </el-form-item>
-        <el-form-item label="开卡金额" prop="money">
-          <el-input v-model="pojo.money"></el-input>
+        <el-form-item label="开卡金额"  prop="money">
+          <el-input v-model="pojo.money" placeholder="请输入开卡金额"></el-input>
         </el-form-item>
         <el-form-item label="可用积分" prop="integral">
-          <el-input v-model="pojo.integral"></el-input>
+          <el-input v-model="pojo.integral" placeholder="请输入可用积分"></el-input>
         </el-form-item>
         <el-form-item label="支付类型" prop="payType">
           <el-select v-model="pojo.payType" placeholder="支付类型" style="width: 110px">
@@ -143,7 +143,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="会员地址" prop="address">
-          <el-input type="textarea" v-model="pojo.address"></el-input>
+          <el-input type="textarea" v-model="pojo.address" placeholder="请输入会员地址"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

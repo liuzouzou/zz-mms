@@ -109,8 +109,8 @@
         <el-form-item label="会员卡号"  prop="cardNum">
           <el-input v-model="pojo.cardNum" placeholder="请输入会员卡号"></el-input>
         </el-form-item>
-        <el-form-item label="会员姓名" placeholder="请输入会员姓名" prop="name">
-          <el-input v-model="pojo.name"></el-input>
+        <el-form-item label="会员姓名"  prop="name">
+          <el-input v-model="pojo.name" placeholder="请输入会员姓名"></el-input>
         </el-form-item>
         <el-form-item label="会员生日" prop="birthday">
           <!-- value-format 是指定绑定值的格式 -->
@@ -177,7 +177,7 @@ export default {
       currenPage: 1, // 当前页码
       pageSize: 10, // 每页显示的数据条数
       searchMap: {
-        // 条件查询绑定的条件值
+        // 条件查询绑定的条件值,搜索字段有四个
         cardNum: "",
         name: "",
         payType: "",

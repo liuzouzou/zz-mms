@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Loading } from 'element-ui'; // 加载loading
+import { Message } from 'element-ui'; // 消息提示
 
 // loading开启和关闭
 const loading = {
@@ -47,7 +48,16 @@ request.interceptors.response.use(response =>{
 },error =>{
     // 关闭加载窗口
     loading.close()
+
     // 出现异常
+    console.log('response.error', error.response.status)
+    Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+        
+    })
+    
     return Promise.reject(error);
 })
 

@@ -21,6 +21,7 @@ Router.prototype.push = function push(location) {
 
 
 export default new Router({
+      mode: 'history',  // 没有哈希#
       routes: [
         {
           path: '/login', // 登录

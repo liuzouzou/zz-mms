@@ -49,6 +49,7 @@ request.interceptors.response.use(response =>{
     // 关闭加载窗口
     loading.close()
 
+    
     // 出现异常
     console.log('response.error', error.response.status)
     Message({
